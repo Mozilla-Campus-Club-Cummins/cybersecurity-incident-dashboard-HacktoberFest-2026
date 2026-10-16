@@ -278,6 +278,31 @@ td {
 
 /* Responsive */
 
+/* Mobile menu button + overlay are hidden on desktop */
+
+.menu-button,
+.sidebar-overlay {
+    display: none;
+}
+
+.main-content,
+.chart-grid > *,
+.analytics-grid > * {
+    min-width: 0;
+}
+
+.table-container {
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-container table {
+    min-width: 760px;
+}
+
+.table-container th {
+    white-space: nowrap;
+}
+
 @media (max-width: 900px) {
 
     .sidebar {
@@ -294,24 +319,111 @@ td {
     }
 }
 
-@media (max-width: 600px) {
+/* Tablet / mobile: sidebar becomes an off-canvas drawer */
 
-    .dashboard {
-        display: block;
+@media (max-width: 768px) {
+
+    .menu-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        width: 42px;
+        height: 42px;
+        z-index: 1200;
+        background: #111827;
+        color: white;
+        border: 1px solid #374151;
+        border-radius: 8px;
+        font-size: 20px;
+        cursor: pointer;
     }
 
     .sidebar {
-        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 240px;
+        padding-top: 70px;
+        overflow-y: auto;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 1100;
     }
+
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1050;
+    }
+
+    .main-content {
+        padding: 70px 16px 20px;
+    }
+
+    /* keep modals above the menu button */
+    .modal-overlay {
+        z-index: 1300;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .topbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .topbar h1 {
+        font-size: 24px;
+    }
+
+    .topbar p {
+        margin: 6px 0 0;
+    }
+
+    .cards {
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .card,
+    .panel {
+        padding: 16px;
+    }
+
+    .card strong {
+        font-size: 26px;
+    }
+
+    .panel-header {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .incident-modal {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 360px) {
 
     .cards {
         grid-template-columns: 1fr;
     }
-
-    .main-content {
-        padding: 20px;
-    }
 }
+
 /* Add Incident Form */
 
 .add-incident-panel {

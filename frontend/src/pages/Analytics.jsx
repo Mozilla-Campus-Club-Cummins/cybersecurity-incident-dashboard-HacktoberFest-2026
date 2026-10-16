@@ -25,6 +25,9 @@ function Analytics() {
 
     const [error, setError] = useState("");
 
+    const [sidebarOpen, setSidebarOpen] =
+        useState(false);
+
 
     // =========================
     // FETCH INCIDENTS
@@ -231,7 +234,35 @@ function Analytics() {
                 SIDEBAR
             ========================= */}
 
-            <aside className="sidebar">
+            {/* MOBILE MENU BUTTON */}
+
+            <button
+                className="menu-button"
+                aria-label="Toggle navigation menu"
+                aria-expanded={sidebarOpen}
+                onClick={() =>
+                    setSidebarOpen(!sidebarOpen)
+                }
+            >
+                {sidebarOpen ? "✕" : "☰"}
+            </button>
+
+            {sidebarOpen && (
+                <div
+                    className="sidebar-overlay"
+                    onClick={() =>
+                        setSidebarOpen(false)
+                    }
+                />
+            )}
+
+            <aside
+                className={
+                    sidebarOpen
+                        ? "sidebar open"
+                        : "sidebar"
+                }
+            >
 
                 <div className="logo">
 
@@ -244,7 +275,7 @@ function Analytics() {
                 </div>
 
 
-                <nav>
+                <nav onClick={() => setSidebarOpen(false)}>
 
                     <a
                         href="/dashboard"
