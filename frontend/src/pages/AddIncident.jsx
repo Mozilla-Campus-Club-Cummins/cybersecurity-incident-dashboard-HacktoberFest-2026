@@ -109,6 +109,7 @@ function AddIncident({ onIncidentAdded }) {
 
                     <div className="form-group">
 
+
                         <label>
                             Incident Type
                         </label>

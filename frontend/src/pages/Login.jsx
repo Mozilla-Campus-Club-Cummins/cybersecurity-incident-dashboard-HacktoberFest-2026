@@ -1,14 +1,20 @@
 import { useState } from "react";
 import api from "../services/api";
+import "./Login.css";
 
 function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     async function handleLogin(e) {
         e.preventDefault();
+
+        if (isLoading) return;
+
         setMessage("");
+        setIsLoading(true);
 
         try {
             const body = new URLSearchParams();
@@ -17,15 +23,31 @@ function Login() {
 
             const response = await api.post("/login", body);
 
+            if (!response.data?.access_token) {
+                setMessage("Unable to complete login. Please try again.");
+                return;
+            }
+
             localStorage.setItem("token", response.data.access_token);
             window.location.href = "/dashboard";
         } catch (error) {
-            console.error("Login failed:", error);
+            const status = error.response?.status;
 
-            setMessage(
-                error.response?.data?.detail ||
-                "Login request failed. Please try again."
-            );
+            if (status === 400 || status === 401 || status === 403) {
+                setMessage("Incorrect username or password. Please try again.");
+            } else if (!error.response) {
+                setMessage(
+                    "Unable to connect to the server. Please check your connection and try again."
+                );
+            } else if (status >= 500) {
+                setMessage(
+                    "The server is temporarily unavailable. Please try again later."
+                );
+            } else {
+                setMessage("Login failed. Please try again.");
+            }
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -42,8 +64,12 @@ function Login() {
                         name="username"
                         autoComplete="username"
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) => {
+                            setUsername(e.target.value);
+                            setMessage("");
+                        }}
                         required
+                        disabled={isLoading}
                     />
                 </div>
 
@@ -55,20 +81,28 @@ function Login() {
                         name="password"
                         autoComplete="current-password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            setMessage("");
+                        }}
                         required
+                        disabled={isLoading}
                     />
                 </div>
 
-                <button type="submit" className="add-button">
-                    Login
-                </button>
-
                 {message && (
-                    <p className="error" role="alert">
+                    <div className="login-error" role="alert">
                         {message}
-                    </p>
+                    </div>
                 )}
+
+                <button
+                    type="submit"
+                    className="add-button login-submit"
+                    disabled={isLoading}
+                >
+                    {isLoading ? "Logging in..." : "Login"}
+                </button>
             </form>
         </main>
     );
