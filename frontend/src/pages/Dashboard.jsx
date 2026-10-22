@@ -22,6 +22,9 @@ function Dashboard() {
     const [severityFilter, setSeverityFilter] = useState("All");
     const [statusFilter, setStatusFilter] = useState("All");
 
+    const [sortBy, setSortBy] = useState("id");
+    const [sortOrder, setSortOrder] = useState("asc");
+
     const [selectedIncident, setSelectedIncident] =
         useState(null);
 
@@ -298,6 +301,47 @@ function Dashboard() {
                 matchesStatus
             );
         });
+const sortedIncidents = [...filteredIncidents].sort((a, b) => {
+    let result = 0;
+
+    switch (sortBy) {
+        case "id":
+            result = Number(a.id) - Number(b.id);
+            break;
+
+        case "severity": {
+            const severityOrder = {
+                Critical: 4,
+                High: 3,
+                Medium: 2,
+                Low: 1
+            };
+
+            result =
+                (severityOrder[a.severity] || 0) -
+                (severityOrder[b.severity] || 0);
+            break;
+        }
+
+        case "risk_score":
+            result = Number(a.risk_score) - Number(b.risk_score);
+            break;
+
+        case "status":
+            result = a.status.localeCompare(b.status);
+            break;
+
+        case "incident_type":
+            result = a.incident_type.localeCompare(b.incident_type);
+            break;
+
+        default:
+            result = 0;
+    }
+
+    return sortOrder === "asc" ? result : -result;
+});
+
 
 
     function getSeverityClass(
@@ -760,18 +804,42 @@ function Dashboard() {
                                     <option value="Closed">
                                         Closed
                                     </option>
-
                                 </select>
+                                <select
+                                    value={sortBy}
+                                    onChange={e => setSortBy(e.target.value)}
+                                    aria-label="Sort incidents by"
+                                >
+                                    <option value="id">Incident ID</option>
+                                    <option value="severity">Severity</option>
+                                    <option value="risk_score">Risk Score</option>
+                                    <option value="status">Status</option>
+                                    <option value="incident_type">Incident Type</option>
+                                </select>
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setSortOrder(
+                                            sortOrder === "asc" ? "desc" : "asc"
+                                        )
+                                    }
+                                    aria-label={`Sort ${sortOrder === "asc" ? "descending" : "ascending"}`}
+                                >
+                                    {sortOrder === "asc" ? "Ascending ↑" : "Descending ↓"}
+                                </button>
 
                             </div>
 
 
                             {/* TABLE */}
 
+
                             <div className="table-container">
 
-                                {filteredIncidents.length ===
-                                0 ? (
+                                  {sortedIncidents.length ===
+0 ? (
+
 
                                     <p className="empty">
 
@@ -823,9 +891,8 @@ function Dashboard() {
 
                                         <tbody>
 
-                                            {filteredIncidents.map(
-                                                incident => (
-
+                                            {sortedIncidents.map(
+    incident => (
                                                     <tr
                                                         key={
                                                             incident.id
