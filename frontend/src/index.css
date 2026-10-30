@@ -919,6 +919,66 @@ td {
 
 .analytics-summary strong {
     font-size: 25px;
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+/* Filters */
+
+.analytics-filters {
+    margin-top: 20px;
+}
+
+.analytics-filters .filters {
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0;
+}
+
+.analytics-filters .filters select {
+    flex: 1 1 160px;
+    min-width: 0;
+}
+
+.analytics-filters .refresh-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.filter-count {
+    margin-top: 10px;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+/* Summary cards: as many per row as fit, instead of a fixed 4 */
+
+.analytics-cards {
+    grid-template-columns:
+        repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.analytics-cards .card span {
+    font-size: 14px;
+}
+
+/* Chart helpers */
+
+.chart-note {
+    margin-top: 6px;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.analytics-chart .recharts-text,
+.analytics-chart .recharts-legend-item-text {
+    font-size: 12px;
+}
+
+.analytics-chart .empty {
+    padding: 40px 0;
+    text-align: center;
+    color: #9ca3af;
 }
 
 
@@ -944,6 +1004,28 @@ td {
 
     .analytics-summary {
         grid-template-columns: 1fr;
+    }
+
+    /* Two small cards per row on phones */
+    .analytics-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .analytics-cards .card strong {
+        font-size: 26px;
+    }
+
+    .analytics-filters .filters {
+        flex-direction: row;
+    }
+
+    .analytics-filters .filters select {
+        flex: 1 1 100%;
+    }
+
+    .analytics-chart .recharts-wrapper {
+        max-width: 100%;
     }
 
 }
